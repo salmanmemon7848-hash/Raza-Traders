@@ -105,19 +105,37 @@ export default function Inventory() {
       console.log('[API Call] Making request:', { method, url });
       console.log('[API Call] Request body:', JSON.stringify(formData));
 
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      // Add logging before fetch to catch any network errors
+      let res;
+      try {
+        res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+      } catch (networkError) {
+        console.error('[Network Error] Fetch failed:', networkError);
+        throw new Error('Network error: Unable to connect to server');
+      }
 
       console.log('[API Response] Status:', res.status);
-      const data = await res.json();
+      console.log('[API Response] Headers:', Object.fromEntries(res.headers.entries()));
+      
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonError) {
+        console.error('[JSON Error] Failed to parse response:', jsonError);
+        const text = await res.text();
+        console.error('[Raw Response]', text);
+        throw new Error('Server returned invalid JSON');
+      }
+      
       console.log('[API Response] Data:', data);
 
       if (!res.ok) {
         console.error('[API Error] Server returned error:', data);
-        throw new Error(data.details || data.error || 'Failed to save product');
+        throw new Error(data.details || data.error || data.message || 'Failed to save product');
       }
 
       console.log('[Success] Product saved successfully!');

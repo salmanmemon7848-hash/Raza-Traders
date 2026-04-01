@@ -72,6 +72,15 @@ export async function POST(request: Request) {
     }
 
     console.log('[Products API] Creating product in database...');
+    console.log('[Products API] Data to be saved:', {
+      name: body.name.trim(),
+      companyName: body.companyName.trim() || 'General',
+      modelNumber: body.modelNumber?.trim() || null,
+      purchasePrice,
+      sellingPrice,
+      quantity,
+    });
+    
     const product = await prisma.product.create({
       data: {
         name: body.name.trim(),
