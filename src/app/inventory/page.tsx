@@ -62,12 +62,17 @@ export default function Inventory() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('[Form Submit] Starting form submission...');
+    console.log('[Form Submit] Form data:', formData);
+    
     setSubmitError(null);
     setSubmitSuccess(false);
     setIsSubmitting(true);
 
-    // Client-side validation
+    // Client-side validation - only required fields
+    console.log('[Validation] Checking required fields...');
     if (!formData.name.trim() || !formData.companyName.trim()) {
+      console.error('[Validation Error] Missing required fields');
       setSubmitError('Product name and company name are required');
       setIsSubmitting(false);
       return;
@@ -77,13 +82,17 @@ export default function Inventory() {
     const sellingPrice = parseFloat(formData.sellingPrice);
     const quantity = parseInt(formData.quantity);
 
+    console.log('[Validation] Parsed values:', { purchasePrice, sellingPrice, quantity });
+
     if (isNaN(purchasePrice) || isNaN(sellingPrice) || isNaN(quantity)) {
+      console.error('[Validation Error] Invalid numbers');
       setSubmitError('Please enter valid numbers for prices and quantity');
       setIsSubmitting(false);
       return;
     }
 
     if (purchasePrice < 0 || sellingPrice < 0 || quantity < 0) {
+      console.error('[Validation Error] Negative values');
       setSubmitError('Prices and quantity cannot be negative');
       setIsSubmitting(false);
       return;
@@ -93,21 +102,29 @@ export default function Inventory() {
       const method = editingProduct ? 'PUT' : 'POST';
       const url = editingProduct ? `/api/products/${editingProduct.id}` : '/api/products';
 
+      console.log('[API Call] Making request:', { method, url });
+      console.log('[API Call] Request body:', JSON.stringify(formData));
+
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
+      console.log('[API Response] Status:', res.status);
       const data = await res.json();
+      console.log('[API Response] Data:', data);
 
       if (!res.ok) {
+        console.error('[API Error] Server returned error:', data);
         throw new Error(data.details || data.error || 'Failed to save product');
       }
 
+      console.log('[Success] Product saved successfully!');
       setSubmitSuccess(true);
       
       setTimeout(() => {
+        console.log('[Cleanup] Closing modal and refreshing...');
         setIsModalOpen(false);
         setEditingProduct(null);
         setFormData({
@@ -122,10 +139,12 @@ export default function Inventory() {
         fetchProducts();
       }, 1500);
     } catch (err: any) {
-      console.error(err);
+      console.error('[Error] Submission failed:', err);
+      console.error('[Error Stack]', err.stack);
       setSubmitError(err.message || 'Failed to save product. Please try again.');
     } finally {
       setIsSubmitting(false);
+      console.log('[Complete] Form submission finished');
     }
   };
 
