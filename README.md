@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Raza Traders - Billing & Inventory Management System
+
+A comprehensive billing and inventory management system built with Next.js 16, Prisma, and SQLite.
+
+## Features
+
+- 📦 Inventory Management
+- 💰 Billing System
+- 👥 Customer Management
+- 📊 Reports & Analytics
+- ⚠️ Low Stock Alerts
+- 🚀 Fast & Responsive UI
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ installed
+- npm or yarn package manager
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Set up environment variables:
+The `.env` file is already configured. For production, see deployment section.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. Run development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. Open [http://localhost:3000](http://localhost:3000)
+
+## Production Deployment
+
+### Quick Deploy (Windows)
+```bash
+start.bat
+```
+
+### Quick Deploy (Linux/Mac)
+```bash
+chmod +x start.sh
+./start.sh
+```
+
+### Manual Deployment
+
+```bash
+npm install
+npx prisma generate
+npx prisma db push --accept-data-loss
+npm run build
+npm start
+```
+
+### Environment Variables for Production
+
+Make sure to set these in your hosting platform:
+
+```
+DATABASE_URL="file:./prisma/dev.db"
+SHADOW_DATABASE_URL="file:./prisma/shadow.db"
+```
+
+### Recommended Hosting Platforms
+
+**For SQLite:**
+- Railway.app
+- Render.com
+- Your own VPS/server
+
+**For PostgreSQL (requires schema change):**
+- Vercel
+- Netlify
+- AWS/Azure/GCP
+
+⚠️ **Important**: This app uses SQLite. If deploying to Vercel/Netlify, you'll need to switch to PostgreSQL. See `DEPLOYMENT.md` for details.
+
+## Project Structure
+
+```
+raza-traders/
+├── prisma/          # Database schema and files
+├── src/
+│   ├── app/        # Next.js app router pages and API routes
+│   ├── components/ # React components
+│   └── lib/        # Utilities and configurations
+├── public/         # Static assets
+└── .env            # Environment variables
+```
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Database**: SQLite with Prisma ORM
+- **Styling**: Tailwind CSS v4
+- **UI Components**: Lucide Icons, Framer Motion
+- **Charts**: Recharts
+- **PDF Generation**: jsPDF
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Check out `DEPLOYMENT.md` for detailed deployment instructions and database configuration options.
